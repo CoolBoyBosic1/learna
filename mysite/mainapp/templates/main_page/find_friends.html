@@ -1,0 +1,10 @@
+{% extends 'main_page/base.html' %}
+
+{% block content %}
+<h2>Список учнів</h2>
+<ul>
+    {% for learner in learners %}
+        <li>{{ learner.le_nickname }} - {{ learner.le_email }} ({{ learner.le_city }})</li>
+    {% endfor %}
+</ul>
+{% endblock %}

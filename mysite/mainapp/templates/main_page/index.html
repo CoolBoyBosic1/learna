@@ -1,0 +1,13 @@
+{% extends 'main_page/base.html' %}
+
+{% block title %}Головна{% endblock %}
+
+{% block content %}
+<h1>Ласкаво просимо!</h1>
+<div class="buttons">
+    <a href="{% url 'find_friends' %}" class="btn">Знайти однодумців</a>
+    <a href="{% url 'find_tutor_indiv' %}" class="btn">Знайти репетитора</a>
+    <a href="{% url 'find_tutor_group' %}" class="btn">Знайти репетитора для групи</a>
+    <a href="{% url 'become_tutor' %}" class="btn">Стати репетитором</a>
+</div>
+{% endblock %}

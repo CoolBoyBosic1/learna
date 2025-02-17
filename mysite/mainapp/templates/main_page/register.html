@@ -1,0 +1,20 @@
+{% extends 'main_page/base.html' %}
+
+{% block content %}
+<h2>Реєстрація</h2>
+<form method="POST">
+    {% csrf_token %}
+    <label>Роль:</label>
+    <select name="role">
+        <option value="learner">Учень</option>
+        <option value="tutor">Репетитор</option>
+    </select>
+    <input type="text" name="nickname" placeholder="Ваш нікнейм" required>
+    <input type="email" name="email" placeholder="Ваш email" required>
+    <input type="password" name="password" placeholder="Пароль" required>
+    <input type="text" name="city" placeholder="Місто">
+    <textarea name="info" placeholder="Про себе"></textarea>
+    <input type="text" name="social" placeholder="Соц. мережі">
+    <button type="submit">Зареєструватися</button>
+</form>
+{% endblock %}

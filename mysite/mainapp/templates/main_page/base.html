@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Learna{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+
+    <header>
+        <div class="logo">Learna</div>
+        <div class="register"><a href="{% url 'register' %}">Реєстрація</a></div>
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>© 2025 Learna. Освітня платформа для навчання та розвитку.</p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,24 @@
+{% extends 'main_page/base.html' %}
+{% load static %}
+
+{% block title %}Learna - Групове навчання{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 40px auto; background: #fff; padding: 20px; border-radius: 6px;">
+  <h2>Групове навчання</h2>
+  <p>Нижче наведено список викладачів, які доступні для групових занять із підпредметами чи часом, що збігаються з вашими:</p>
+
+  {% if recommended_tutors %}
+    <ul>
+      {% for tutor in recommended_tutors %}
+        <li>
+          <strong>{{ tutor.nickname }}</strong> (Email: {{ tutor.email }})
+          <br>Місто: {{ tutor.city }}<br>Інформація: {{ tutor.info }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Немає групових викладачів із збігами.</p>
+  {% endif %}
+</div>
+{% endblock %}

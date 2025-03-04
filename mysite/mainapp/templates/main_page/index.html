@@ -1,13 +1,28 @@
 {% extends 'main_page/base.html' %}
+{% load static %}
 
-{% block title %}Головна{% endblock %}
+{% block title %}Learna - Головна{% endblock %}
 
 {% block content %}
-<h1>Ласкаво просимо!</h1>
-<div class="buttons">
-    <a href="{% url 'find_friends' %}" class="btn">Знайти однодумців</a>
-    <a href="{% url 'find_tutor_indiv' %}" class="btn">Знайти репетитора</a>
-    <a href="{% url 'find_tutor_group' %}" class="btn">Знайти репетитора для групи</a>
-    <a href="{% url 'become_tutor' %}" class="btn">Стати репетитором</a>
-</div>
+<section class="hero">
+    <h1 class="fade-in">Ласкаво просимо!</h1>
+    <p class="subtitle fade-in">Обери, що тобі потрібно:</p>
+    <form method="POST" action="">
+        {% csrf_token %}
+        <div class="buttons">
+            <button type="submit" name="choice" value="find_friends" class="btn">
+                👥 Знайти однодумців
+            </button>
+            <button type="submit" name="choice" value="find_tutor_indiv" class="btn">
+                📚 Знайти репетитора
+            </button>
+            <button type="submit" name="choice" value="find_tutor_group" class="btn">
+                🎓 Знайти репетитора для групи
+            </button>
+            <button type="submit" name="choice" value="become_tutor" class="btn">
+                🧑‍🏫 Стати репетитором
+            </button>
+        </div>
+    </form>
+</section>
 {% endblock %}

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Вибір часу</title>
+    <link rel="stylesheet" href="{% static 'css/select_time.css' %}">
+</head>
+<body>
+    <div class="calendar-container">
+        <h2>Оберіть зручний час</h2>
+        <div class="calendar">
+            <div class="weekdays">
+                <div class="empty-slot"></div>  <!-- Порожнє місце -->
+                {% for day in days %}
+                    <div class="day-header">{{ day }}</div>
+                {% endfor %}
+            </div>
+            <div class="grid-container">
+                {% for hour in hours %}
+                    <div class="time-row">
+                        <div class="time-label">{{ hour }}:00</div>
+                        {% for day in days %}
+                            <!-- slot з атрибутами -->
+                            <div class="slot"
+                                 data-day="{{ day }}"
+                                 data-hour="{{ hour }}"
+                                 onclick="toggleSlot(this)">
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <button class="continue-btn" onclick="submitTime()">Продовжити</button>
+    </div>
+
+    <!-- Прихована форма для відправки POST -->
+    <form id="timeForm" method="POST" style="display: none;">
+        {% csrf_token %}
+        <input type="hidden" name="selected_times" id="selected_times">
+    </form>
+
+    <script>
+    // Масив для позначення вибраних слотів
+    let selectedSlots = [];
+
+    function toggleSlot(element) {
+        // day & hour
+        let day = element.getAttribute('data-day');
+        let hour = element.getAttribute('data-hour');
+
+        // Якщо слот ще не вибрано – додаємо
+        // Якщо вже вибрано – при повторному кліку знімаємо
+        element.classList.toggle('selected');
+
+        // Перевіряємо, чи цей (day, hour) вже у selectedSlots
+        let index = selectedSlots.findIndex(s => s.day === day && s.hour === hour);
+        if (index === -1) {
+            // Додаємо
+            selectedSlots.push({ day, hour });
+        } else {
+            // Видаляємо
+            selectedSlots.splice(index, 1);
+        }
+    }
+
+    function submitTime() {
+        if (selectedSlots.length === 0) {
+            alert("Будь ласка, оберіть принаймні один тайм-слот!");
+            return;
+        }
+        // Записуємо JSON
+        document.getElementById('selected_times').value = JSON.stringify(selectedSlots);
+        document.getElementById('timeForm').submit();
+    }
+    </script>
+</body>
+</html>

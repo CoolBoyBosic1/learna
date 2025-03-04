@@ -1,0 +1,79 @@
+{% extends 'main_page/base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/select_subject.css' %}">
+
+<div class="select-container">
+    <h2>Обери підпредмет</h2>
+    <div class="subject-container">
+        <!-- Приклад з Математикою -->
+        <div class="subject-card">
+            <div class="subject-title">Математика</div>
+            <div class="subtopics">
+                <div class="subtopic" onclick="toggleSelection(this)">Алгебра</div>
+                <div class="subtopic" onclick="toggleSelection(this)">Геометрія</div>
+                <div class="subtopic" onclick="toggleSelection(this)">Тригонометрія</div>
+                <div class="subtopic" onclick="toggleSelection(this)">Комбінаторика</div>
+            </div>
+        </div>
+        <!-- Програмування -->
+        <div class="subject-card">
+            <div class="subject-title">Програмування</div>
+            <div class="subtopics">
+                <div class="subtopic" onclick="toggleSelection(this)">Python</div>
+                <div class="subtopic" onclick="toggleSelection(this)">JavaScript</div>
+                <div class="subtopic" onclick="toggleSelection(this)">C++</div>
+                <div class="subtopic" onclick="toggleSelection(this)">Java</div>
+            </div>
+        </div>
+
+        <!-- Мови -->
+        <div class="subject-card">
+            <div class="subject-title">Мови</div>
+            <div class="subtopics">
+                <div class="subtopic" onclick="toggleSelection(this)">Англійська</div>
+                <div class="subtopic" onclick="toggleSelection(this)">Українська</div>
+                <div class="subtopic" onclick="toggleSelection(this)">Німецька</div>
+                <div class="subtopic" onclick="toggleSelection(this)">Французька</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Кнопка "Продовжити" -->
+    <button id="continue-btn" class="continue-btn" onclick="goToCalendar()">Продовжити</button>
+</div>
+
+<!-- Прихована форма, яка відправить POST із вибраними підпредметами -->
+<form id="subjectForm" method="POST" style="display: none;">
+    {% csrf_token %}
+    <input type="hidden" name="selected_subsubjects" id="selected_subsubjects">
+</form>
+
+<script>
+function toggleSelection(element) {
+    element.classList.toggle("selected");
+}
+
+function goToCalendar() {
+    // Знаходимо всі .subtopic, які мають клас .selected
+    let selected = document.querySelectorAll('.subtopic.selected');
+    if (selected.length === 0) {
+        alert("Будь ласка, оберіть хоча б один підпредмет!");
+        return;
+    }
+
+    // Формуємо масив назв обраних підпредметів
+    let subsubjectArray = [];
+    selected.forEach(elem => {
+        subsubjectArray.push(elem.textContent.trim());
+    });
+
+    // Записуємо JSON у прихований інпут
+    document.getElementById("selected_subsubjects").value = JSON.stringify(subsubjectArray);
+
+    // Відправляємо форму (POST) на цей самий URL, де Django в’юшка зчитає дані і збереже в сесії
+    document.getElementById("subjectForm").submit();
+}
+</script>
+{% endblock %}

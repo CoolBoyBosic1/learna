@@ -1,0 +1,114 @@
+/* Загальні стилі */
+body {
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Контейнер заголовку */
+.select-container {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+/* Головний контейнер предметів */
+.subject-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-top: 30px;
+}
+
+/* Карточка предмета */
+.subject-card {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    width: 320px;
+    font-size: 20px;
+    font-weight: bold;
+    transition: transform 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border-top: 8px solid #007bff;
+    min-height: 300px;
+}
+
+/* Ефект при наведенні */
+.subject-card:hover {
+    transform: scale(1.05);
+}
+
+/* Назва предмета */
+.subject-title {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    padding: 15px;
+    width: 100%;
+    border-radius: 10px 10px 0 0;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+/* Контейнер підпредметів */
+.subtopics {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+}
+
+/* Окремий підпредмет */
+.subtopic {
+    background: white;
+    color: #333;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    border: 2px solid #007bff;
+    text-align: center;
+    width: 90%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+/* Виділення вибраного підпредмета */
+.subtopic.selected {
+    background: #28a745;
+    color: white;
+    border: 2px solid #1e7e34;
+}
+
+/* Ефект при наведенні */
+.subtopic:hover {
+    transform: scale(1.05);
+}
+
+/* Стилі для кнопки "Продовжити" */
+.continue-btn {
+    background: #007bff;
+    color: white;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 30px;
+    border: none;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.continue-btn:hover {
+    background: #0056b3;
+    transform: scale(1.05);
+}

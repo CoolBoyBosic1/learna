@@ -1,26 +1,43 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Learna{% endblock %}</title>
-    {% load static %}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
 
-    <header>
-        <div class="logo">Learna</div>
-        <div class="register"><a href="{% url 'register' %}">Реєстрація</a></div>
-    </header>
+<header>
+    <div class="logo">
+        <a href="{% url 'index' %}">Learna</a>
+    </div>
+    <div class="header-right">
+        {% if user.is_authenticated %}
+            <!-- Якщо користувач залогінений, показуємо іконку (або просто нік) -->
+            <a href="{% url 'profile' %}" class="user-icon">
+                <!-- Приклад іконки. Збережи user_icon.png у папці static/images/ -->
+                <img src="{% static 'images/user_icon.png' %}" alt="User" class="icon-img">
+                {{ user.nickname }}
+            </a>
+            <!-- Посилання на вихід (потрібен маршрут logout) -->
+            <a href="{% url 'logout' %}" class="logout-link">Вихід</a>
+        {% else %}
+            <!-- Якщо не залогінений, показуємо логін і реєстрацію -->
+            <a href="{% url 'login' %}">Увійти</a>
+            <a href="{% url 'register' %}" class="register-btn">Реєстрація</a>
+        {% endif %}
+    </div>
+</header>
 
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
+<main>
+    {% block content %}
+    {% endblock %}
+</main>
 
-    <footer>
-        <p>© 2025 Learna. Освітня платформа для навчання та розвитку.</p>
-    </footer>
+<footer>
+    <p>© 2025 Learna. Освітня платформа для навчання та розвитку.</p>
+</footer>
 
 </body>
 </html>

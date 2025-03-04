@@ -1,0 +1,24 @@
+{% extends 'main_page/base.html' %}
+{% load static %}
+
+{% block title %}Learna - Знайти однодумців{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 40px auto; background: #fff; padding: 20px; border-radius: 6px;">
+  <h2>Знайти однодумців</h2>
+  <p>Нижче наведено список користувачів, у яких перетинаються підпредмети або тайм-слоти з вашими:</p>
+
+  {% if recommended_friends %}
+    <ul>
+      {% for friend in recommended_friends %}
+        <li>
+          <strong>{{ friend.nickname }}</strong> (Email: {{ friend.email }})
+          <br>Місто: {{ friend.city }}<br>Інформація: {{ friend.info }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Немає користувачів із збігами.</p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,129 @@
+{% extends 'main_page/base.html' %}
+{% load static %}
+
+{% block title %}Learna - Профіль{% endblock %}
+
+{% block content %}
+<style>
+  .profile-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 10px;
+  }
+  .profile-col {
+    flex: 1;
+    min-width: 300px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  .profile-col h3 {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  #profileInfo p {
+    margin: 5px 0;
+  }
+  .search-btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+  }
+  .search-btn:hover {
+    background-color: #218838;
+  }
+  .not-authorized {
+    color: red;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+  }
+</style>
+
+<div class="profile-container">
+  <!-- Колонка 1: Основна інформація -->
+  <div class="profile-col">
+    <h3>Основна інформація</h3>
+    <div id="profileInfo"></div>
+  </div>
+
+  <!-- Колонка 2: Викладачі -->
+  <div class="profile-col">
+    <h3>Викладачі</h3>
+    <div id="teachersList"></div>
+    <!-- Кнопка для пошуку викладачів -->
+    <a href="{% url 'tutor_indiv_final' %}" class="search-btn">Знайти викладачів</a>
+  </div>
+
+  <!-- Колонка 3: Друзі -->
+  <div class="profile-col">
+    <h3>Друзі</h3>
+    <div id="friendsList"></div>
+    <!-- Кнопка для пошуку друзів -->
+    <a href="{% url 'find_friends_final' %}" class="search-btn">Знайти друзів</a>
+  </div>
+</div>
+
+<script>
+  const profileInfoDiv = document.getElementById('profileInfo');
+  const teachersListDiv = document.getElementById('teachersList');
+  const friendsListDiv = document.getElementById('friendsList');
+
+  // Виконуємо fetch до API-профілю (сесійна автентифікація)
+  fetch('/api/profile/', {
+    method: 'GET'
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.detail) {
+      profileInfoDiv.innerHTML = '<p class="not-authorized">Помилка: ' + data.detail + '</p>';
+    } else {
+      renderProfile(data);
+    }
+  })
+  .catch(err => {
+    profileInfoDiv.innerHTML = '<p class="not-authorized">Помилка: ' + err + '</p>';
+  });
+
+  function renderProfile(data) {
+    // Заповнюємо основну інформацію
+    let html = `
+      <p><strong>Email:</strong> ${data.email}</p>
+      <p><strong>Нікнейм:</strong> ${data.nickname}</p>
+      <p><strong>Роль:</strong> ${data.role}</p>
+    `;
+    if (data.city) {
+      html += `<p><strong>Місто:</strong> ${data.city}</p>`;
+    }
+    if (data.info) {
+      html += `<p><strong>Інформація:</strong> ${data.info}</p>`;
+    }
+    profileInfoDiv.innerHTML = html;
+
+    // Викладачі
+    if (data.teachers && data.teachers.length > 0) {
+      teachersListDiv.innerHTML = `<ul>${data.teachers.map(t => `<li>${t.nickname} (ID: ${t.id})</li>`).join('')}</ul>`;
+    } else {
+      teachersListDiv.innerHTML = '<p>Немає даних.</p>';
+    }
+
+    // Друзі
+    if (data.friends && data.friends.length > 0) {
+      friendsListDiv.innerHTML = `<ul>${data.friends.map(f => `<li>${f.nickname} (ID: ${f.id})</li>`).join('')}</ul>`;
+    } else {
+      friendsListDiv.innerHTML = '<p>Немає даних.</p>';
+    }
+  }
+</script>
+{% endblock %}

@@ -1,20 +1,77 @@
-{% extends 'main_page/base.html' %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Реєстрація | Learna</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
 
-{% block content %}
-<h2>Реєстрація</h2>
-<form method="POST">
-    {% csrf_token %}
-    <label>Роль:</label>
-    <select name="role">
-        <option value="learner">Учень</option>
-        <option value="tutor">Репетитор</option>
-    </select>
-    <input type="text" name="nickname" placeholder="Ваш нікнейм" required>
-    <input type="email" name="email" placeholder="Ваш email" required>
-    <input type="password" name="password" placeholder="Пароль" required>
-    <input type="text" name="city" placeholder="Місто">
-    <textarea name="info" placeholder="Про себе"></textarea>
-    <input type="text" name="social" placeholder="Соц. мережі">
-    <button type="submit">Зареєструватися</button>
-</form>
-{% endblock %}
+    <header>
+        <div class="logo"><a href="{% url 'index' %}">Learna</a></div>
+    </header>
+
+    <div class="register-container">
+        <h2>Реєстрація</h2>
+        <p>Створіть акаунт, щоб продовжити</p>
+        <form method="POST">
+            {% csrf_token %}
+
+            <!-- Email -->
+            <div class="input-group">
+                <label>Email:</label>
+                <input type="email" name="email" placeholder="Введіть ваш email" required>
+            </div>
+
+            <!-- Нікнейм -->
+            <div class="input-group">
+                <label>Нікнейм:</label>
+                <input type="text" name="nickname" placeholder="Введіть ваш нікнейм" required>
+            </div>
+
+            <!-- Пароль -->
+            <div class="input-group">
+                <label>Пароль:</label>
+                <input type="password" name="password1" placeholder="Введіть пароль" required>
+            </div>
+
+            <!-- Повтор пароля -->
+            <div class="input-group">
+                <label>Повторіть пароль:</label>
+                <input type="password" name="password2" placeholder="Повторіть пароль" required>
+            </div>
+
+            <!-- Місто -->
+            <div class="input-group">
+                <label>Місто:</label>
+                <input type="text" name="city" placeholder="Наприклад, Київ">
+            </div>
+
+            <!-- Інформація про себе -->
+            <div class="input-group">
+                <label>Інформація про себе:</label>
+                <textarea name="info" rows="4" placeholder="Кілька слів про себе..."></textarea>
+            </div>
+
+            <button type="submit" class="register-btn">Зареєструватися</button>
+
+            <!-- Повідомлення про помилки (Django messages) -->
+            {% if messages %}
+              <div class="errors">
+                {% for message in messages %}
+                  <p>{{ message }}</p>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            <p class="login-link">Вже є акаунт? <a href="{% url 'login' %}">Увійти</a></p>
+        </form>
+    </div>
+
+    <footer>
+        © 2025 Learna. Освітня платформа для навчання та розвитку.
+    </footer>
+
+</body>
+</html>

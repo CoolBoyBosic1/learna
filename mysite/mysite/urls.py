@@ -18,8 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('mainapp.urls')),  # Підключаємо маршрути додатку
+    path('admin/', admin.site.urls),  # Панель адміністратора Django
+    path('', include('mainapp.urls')),  # Підключення всіх маршрутів додатку mainapp
 ]
 
 

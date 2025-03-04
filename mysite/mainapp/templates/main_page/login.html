@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Вхід | Learna</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+
+    <header>
+        <div class="logo"><a href="{% url 'index' %}">Learna</a></div>
+    </header>
+
+    <div class="register-container">
+        <h2>Вхід</h2>
+        <p>Увійдіть, щоб продовжити</p>
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="input-group">
+                <label>Email:</label>
+                <input type="email" name="email" placeholder="Введіть ваш email" required>
+            </div>
+
+            <div class="input-group">
+                <label>Пароль:</label>
+                <input type="password" name="password" placeholder="Введіть пароль" required>
+            </div>
+
+            <button type="submit" class="register-btn">Увійти</button>
+
+            <p class="login-link">Не маєте акаунту? <a href="{% url 'register' %}">Зареєструватися</a></p>
+        </form>
+    </div>
+
+    <footer>
+        © 2025 Learna. Освітня платформа для навчання та розвитку.
+    </footer>
+
+</body>
+</html>

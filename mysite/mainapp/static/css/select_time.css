@@ -1,0 +1,95 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f7f7f7;
+}
+
+.calendar-container {
+    width: 90%;
+    margin: 20px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.calendar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.weekdays {
+    display: grid;
+    grid-template-columns: 80px repeat(7, 1fr);
+    background: #007bff;
+    color: white;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.empty-slot {
+    background: transparent;
+}
+
+.day-header {
+    text-align: center;
+    padding: 10px;
+}
+
+.grid-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.time-row {
+    display: grid;
+    grid-template-columns: 80px repeat(7, 1fr);
+    gap: 5px;
+    margin-bottom: 5px;
+}
+
+.time-label {
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+    background: #e0e0e0;
+    border-radius: 5px;
+}
+
+.slot {
+    height: 40px;
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.slot:hover {
+    background: #d0d0d0;
+}
+
+.slot.selected {
+    background: #28a745;
+    color: white;
+}
+
+.continue-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.continue-btn:hover {
+    background: #0056b3;
+}

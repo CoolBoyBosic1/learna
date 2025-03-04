@@ -1,0 +1,69 @@
+/* mainapp/static/main_page/profile.css */
+
+/* Скидання відступів та загальні стилі */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f2f2f2;
+  color: #333;
+}
+
+/* Контейнер профілю */
+.profile-container {
+  max-width: 600px;
+  margin: 40px auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+/* Заголовок */
+.profile-container h1 {
+  margin-bottom: 20px;
+}
+
+/* Повідомлення про неавторизованість */
+.not-authorized {
+  color: red;
+  font-weight: bold;
+  text-align: center;
+  margin: 20px;
+}
+
+/* Кнопки */
+button {
+  background-color: #007bff;
+  border: none;
+  padding: 8px 14px;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Поля форми */
+label {
+  font-weight: bold;
+}
+input[type="text"],
+textarea {
+  width: 100%;
+  padding: 6px;
+  margin: 6px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Списки */
+ul {
+  margin-left: 20px;
+  margin-bottom: 20px;
+}

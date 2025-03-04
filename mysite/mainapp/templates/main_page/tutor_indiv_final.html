@@ -1,0 +1,24 @@
+{% extends 'main_page/base.html' %}
+{% load static %}
+
+{% block title %}Learna - Індивідуальний репетитор{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 40px auto; background: #fff; padding: 20px; border-radius: 6px;">
+  <h2>Знайти індивідуального репетитора</h2>
+  <p>Нижче наведено список викладачів із підпредметами чи часом, що збігаються з вашими:</p>
+
+  {% if recommended_tutors %}
+    <ul>
+      {% for tutor in recommended_tutors %}
+        <li>
+          <strong>{{ tutor.nickname }}</strong> (Email: {{ tutor.email }})
+          <br>Місто: {{ tutor.city }}<br>Інформація: {{ tutor.info }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Немає викладачів із збігами.</p>
+  {% endif %}
+</div>
+{% endblock %}

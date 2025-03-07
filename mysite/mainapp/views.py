@@ -4,9 +4,12 @@ from urllib import request
 
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from .models import User
+
+
+
 
 
 def index(request):
@@ -228,17 +231,24 @@ def find_recommended_users(role, selected_subsubjects, chosen_times, exclude_use
 
     recommended = []
     for user in qs:
-        # Збираємо назви підпредметів юзера
-        user_subs = [s.ss_name for s in user.subsubjects.all()]
-        # Збираємо тайм-слоти (припустимо, user.available_times - це список)
-        user_times = user.available_times or []
+        # Збираємо назви підпредметів юзера (припускаємо, що user.subsubjects - це M2M)
+        user_subs = list(user.subsubjects.values_list('ss_name', flat=True))  # Отримуємо лише значення назв
+        user_times = user.available_times or []  # Тайм-слоти користувача
 
-        # Перевіримо перетин
+        # Переконаємось, що вибрані підпредмети - це список рядків
+        selected_subsubjects = [s if isinstance(s, str) else s.get('ss_name', '') for s in selected_subsubjects]
+        chosen_times = [t if isinstance(t, str) else str(t) for t in chosen_times]
+
+        # Знаходимо перетини
         overlap_subs = set(selected_subsubjects).intersection(user_subs)
         overlap_times = set(chosen_times).intersection(user_times)
 
-        # Якщо є збіг хоч в одному
+        # Якщо є збіг хоча б в одному параметрі - додаємо в рекомендації
         if overlap_subs or overlap_times:
             recommended.append(user)
 
     return recommended
+
+def user_logout(request):
+    logout(request)
+    return redirect('index')

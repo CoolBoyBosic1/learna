@@ -21,10 +21,10 @@
                 {{ user.nickname }}
             </a>
             <!-- Посилання на вихід (потрібен маршрут logout) -->
-            <a href="{% url 'logout' %}" class="logout-link">Вихід</a>
+            <a href="{% url 'logout' %}">Вихід</a>
         {% else %}
             <!-- Якщо не залогінений, показуємо логін і реєстрацію -->
-            <a href="{% url 'login' %}">Увійти</a>
+            <a href="{% url 'login' %}" class="register-btn">Увійти</a>
             <a href="{% url 'register' %}" class="register-btn">Реєстрація</a>
         {% endif %}
     </div>

@@ -6,59 +6,6 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 
-# Менеджер користувачів
-class UserManager(BaseUserManager):
-    def create_user(self, email, nickname, password=None, **extra_fields):
-        if not email:
-            raise ValueError("Користувач повинен мати email")
-        email = self.normalize_email(email)
-        user = self.model(email=email, nickname=nickname, **extra_fields)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(self, email, nickname, password=None, **extra_fields):
-        extra_fields.setdefault("is_staff", True)
-        extra_fields.setdefault("is_superuser", True)
-        return self.create_user(email, nickname, password, **extra_fields)
-
-
-# ====== Головна модель користувача ======
-class User(AbstractBaseUser, PermissionsMixin):
-    ROLE_CHOICES = [
-        ("learner", "Учень"),
-        ("teacher", "Вчитель"),
-        ("admin", "Адміністратор"),
-    ]
-
-    email = models.EmailField(unique=True)
-    nickname = models.CharField(max_length=50, unique=True)
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default="learner")
-    city = models.CharField(max_length=50, null=True, blank=True)
-    info = models.TextField(null=True, blank=True)
-    social_networks = models.TextField(null=True, blank=True)
-    available_times = models.JSONField(default=list, blank=True)  # Доступні слоти
-
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-
-    objects = UserManager()
-
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["nickname"]
-
-    def __str__(self):
-        return self.nickname
-
-
-# ====== Друзі учнів ======
-class FriendsByLearner(models.Model):
-    fl_learner_id_1 = models.ForeignKey(User, related_name="friend1", on_delete=models.CASCADE)
-    fl_learner_id_2 = models.ForeignKey(User, related_name="friend2", on_delete=models.CASCADE)
-    fl_time_found = models.DateTimeField(auto_now_add=True, null=True)
-
-    class Meta:
-        unique_together = ('fl_learner_id_1', 'fl_learner_id_2')
 
 
 # ====== Предмети ======
@@ -85,6 +32,62 @@ class Subsubject(models.Model):
     def __str__(self):
         return self.ss_name
 
+
+
+# Менеджер користувачів
+class UserManager(BaseUserManager):
+    def create_user(self, email, nickname, password=None, **extra_fields):
+        if not email:
+            raise ValueError("Користувач повинен мати email")
+        email = self.normalize_email(email)
+        user = self.model(email=email, nickname=nickname, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, nickname, password=None, **extra_fields):
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        return self.create_user(email, nickname, password, **extra_fields)
+
+
+class User(AbstractBaseUser, PermissionsMixin):
+    ROLE_CHOICES = [
+        ("learner", "Учень"),
+        ("teacher", "Вчитель"),
+        ("admin", "Адміністратор"),
+    ]
+
+    email = models.EmailField(unique=True)
+    nickname = models.CharField(max_length=50, unique=True)
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default="learner")
+    city = models.CharField(max_length=50, null=True, blank=True)
+    info = models.TextField(null=True, blank=True)
+    social_networks = models.TextField(null=True, blank=True)
+    available_times = models.JSONField(default=list, blank=True)  # Доступні слоти
+    subsubjects = models.ManyToManyField(Subsubject, related_name="users", blank=True)  # Додаємо зв’язок
+
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+
+    objects = UserManager()
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["nickname"]
+
+    def __str__(self):
+        return self.nickname
+
+
+
+# ====== Друзі учнів ======
+class FriendsByLearner(models.Model):
+    fl_learner_id_1 = models.ForeignKey(User, related_name="friend1", on_delete=models.CASCADE)
+    fl_learner_id_2 = models.ForeignKey(User, related_name="friend2", on_delete=models.CASCADE)
+    fl_time_found = models.DateTimeField(auto_now_add=True, null=True)
+
+    class Meta:
+        unique_together = ('fl_learner_id_1', 'fl_learner_id_2')
 
 # ====== Навчальні програми ======
 class StudyProgram(models.Model):

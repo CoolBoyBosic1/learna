@@ -4,7 +4,7 @@ from django.urls import path
 from . import views
 from .views import (
     select_subject, select_time, profile, tutor_indiv_final,
-    find_friends_final, tutor_group_final, user_login, profile_api, final_step,
+    find_friends_final, tutor_group_final, user_login, profile_api, final_step, user_logout,
 )
 
 urlpatterns = [
@@ -17,7 +17,7 @@ urlpatterns = [
     path('find_friends_final/', find_friends_final, name='find_friends_final'),
     path('tutor_indiv_final/', tutor_indiv_final, name='tutor_indiv_final'),
     path('tutor_group_final/', tutor_group_final, name='tutor_group_final'),
-    path('logout/', LogoutView.as_view(next_page='index'), name='logout'),
+    path('logout/', user_logout, name='logout'),
 
     path('final_step/', final_step, name='final_step'),
     path('api/profile/', profile_api, name='profile_api')

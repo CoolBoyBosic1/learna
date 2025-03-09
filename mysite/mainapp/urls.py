@@ -5,10 +5,12 @@ from . import views
 from .views import (
     select_subject, select_time, profile, tutor_indiv_final,
     find_friends_final, tutor_group_final, user_login, profile_api, final_step, user_logout,
+    material_click
 )
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('material/<int:row_index>/', views.material_click, name='material_click'),
     path('register/', views.register, name='register'),
     path('login/', user_login, name='login'),
     path('select_subject/', select_subject, name='select_subject'),

@@ -1,6 +1,10 @@
 # mainapp/views.py
+import csv
+import io
 import json
 from urllib import request
+
+import requests
 
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -8,27 +12,67 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from .models import User
 
-
-
-
+# Це URL вашого Apps Script, який оновлює лічильник
+APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxLs_cVzoxAu9BsJ-a1UkFQT3oz0k9hzJBefq7ugiMNaXFh2gCJXXNqr1FUriHULszBnw/exec"
 
 def index(request):
+    # 1) Якщо POST (натиснуті кнопки "Знайти однодумців" тощо), обробляємо:
     if request.method == 'POST':
-        # 1) Користувач обрав дію (find_friends, find_tutor_indiv, find_tutor_group, become_tutor)
         user_choice = request.POST.get('choice')
-        # 2) Зберігаємо вибір у сесії
         request.session['user_choice'] = user_choice
-
-        # 3) Якщо користувач НЕ залогінений -> на реєстрацію
         if not request.user.is_authenticated:
             return redirect('register')
         else:
-            # Якщо залогінений -> одразу на вибір підпредметів
             return redirect('select_subject')
 
-    # Якщо GET-запит, просто рендеримо головну
-    return render(request, 'main_page/index.html')
+    # 2) Зчитуємо CSV з опублікованої Google-таблиці
+    csv_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRi2gBCZN4CfzrQ7eH_rdCfSYY4LSHXR_cjddl3TNyh5YYH9WM-qjQw8qkck-eBLknGi4UvVR_EpVi4/pub?gid=0&single=true&output=csv"
+    resp = requests.get(csv_url)
+    resp.encoding = 'utf-8'
+    reader = csv.reader(io.StringIO(resp.text))
 
+    # Якщо перший рядок — заголовки (title, link, clicks), пропускаємо їх
+    headers = next(reader, None)  # ["title", "link", "clicks"]
+    materials = list(reader)
+    # Тепер materials[0] може бути ["brain hacks", "https://youtube...", "0"]
+
+    return render(request, 'main_page/index.html', {
+        'materials': materials
+    })
+
+
+def material_click(request, row_index):
+    """
+    Користувач натиснув на матеріал з індексом row_index (починаючи з 0).
+    1) Надсилаємо POST-запит до Apps Script, щоб збільшити лічильник у стовпці C.
+    2) Читаємо CSV ще раз, щоб дістати реальне посилання.
+    3) Редіректимо користувача на YouTube.
+    """
+    # 1) Збільшуємо лічильник у таблиці
+    #    Якщо row_index=0 => це 2-ий рядок (бо 1-ий - заголовок).
+    actual_row = row_index + 2
+    data = {'rowIndex': actual_row}
+    try:
+        requests.post(APPS_SCRIPT_URL, data=data)
+    except Exception as e:
+        print("Помилка при оновленні лічильника:", e)
+
+    # 2) Знову зчитаємо CSV, щоб отримати поточне посилання (інакше не знаємо, який URL)
+    csv_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRi2gBCZN4CfzrQ7eH_rdCfSYY4LSHXR_cjddl3TNyh5YYH9WM-qjQw8qkck-eBLknGi4UvVR_EpVi4/pub?gid=0&single=true&output=csv"
+    resp = requests.get(csv_url)
+    resp.encoding = 'utf-8'
+    reader = csv.reader(io.StringIO(resp.text))
+    headers = next(reader, None)
+    materials = list(reader)
+
+    # Якщо все добре, materials[row_index] = [title, link, clicks]
+    try:
+        youtube_link = materials[row_index][1]  # стовпець B = link
+    except IndexError:
+        youtube_link = '/'
+
+    # 3) Редіректимо на справжнє посилання
+    return redirect(youtube_link)
 
 def register(request):
     if request.method == 'POST':

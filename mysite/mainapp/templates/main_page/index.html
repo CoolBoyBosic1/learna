@@ -4,7 +4,8 @@
 {% block title %}Learna - Головна{% endblock %}
 
 {% block content %}
-<section class="hero">
+<!-- Секція з привітанням та кнопками -->
+<section class="hero" style="margin-bottom: 40px;">
     <h1 class="fade-in">Ласкаво просимо!</h1>
     <p class="subtitle fade-in">Обери, що тобі потрібно:</p>
     <form method="POST" action="">
@@ -21,5 +22,25 @@
             </button>
         </div>
     </form>
+</section>
+
+<!-- Секція з матеріалами, відділена від попередньої на 40px -->
+<section class="materials" style="margin-bottom: 40px;">
+    <h2 style="margin-bottom: 10px;">Навчіться вчитись за допомогою цих відео:</h2>
+    {% if materials %}
+        <ul style="list-style-type: none; padding: 0;">
+            {% for row in materials %}
+            <li style="margin-bottom: 20px;">
+                <strong>{{ row.0 }}</strong><br>
+                <!-- Клікабельне посилання, що веде на material_click -->
+                <a href="{% url 'material_click' forloop.counter0 %}" target="_blank">
+                    {{ row.1 }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Наразі немає доданих матеріалів.</p>
+    {% endif %}
 </section>
 {% endblock %}

@@ -15,7 +15,7 @@
   }
   .profile-col {
     flex: 1;
-    min-width: 300px;
+    min-width: 250px;
     background-color: #fff;
     padding: 20px;
     border-radius: 6px;
@@ -25,7 +25,7 @@
     text-align: center;
     margin-bottom: 10px;
   }
-  #profileInfo p {
+  #profileInfo p, #subjectsList p {
     margin: 5px 0;
   }
   .search-btn {
@@ -62,16 +62,26 @@
   <div class="profile-col">
     <h3>Викладачі</h3>
     <div id="teachersList"></div>
-    <!-- Кнопка для пошуку викладачів -->
-    <a href="{% url 'tutor_indiv_final' %}" class="search-btn">Знайти викладачів</a>
+    <!-- Кнопку показуємо лише, якщо користувач - учень -->
+    {% if user.role == "learner" %}
+      <a href="{% url 'tutor_indiv_final' %}" class="search-btn">Знайти викладачів</a>
+    {% endif %}
   </div>
 
   <!-- Колонка 3: Друзі -->
   <div class="profile-col">
     <h3>Друзі</h3>
     <div id="friendsList"></div>
-    <!-- Кнопка для пошуку друзів -->
-    <a href="{% url 'find_friends_final' %}" class="search-btn">Знайти друзів</a>
+    <!-- Кнопку показуємо лише, якщо користувач - учень -->
+    {% if user.role == "learner" %}
+      <a href="{% url 'find_friends_final' %}" class="search-btn">Знайти друзів</a>
+    {% endif %}
+  </div>
+
+  <!-- Колонка 4: Обрані предмети -->
+  <div class="profile-col">
+    <h3>Обрані предмети</h3>
+    <div id="subjectsList"></div>
   </div>
 </div>
 
@@ -79,6 +89,7 @@
   const profileInfoDiv = document.getElementById('profileInfo');
   const teachersListDiv = document.getElementById('teachersList');
   const friendsListDiv = document.getElementById('friendsList');
+  const subjectsListDiv = document.getElementById('subjectsList');
 
   // Виконуємо fetch до API-профілю (сесійна автентифікація)
   fetch('/api/profile/', {
@@ -97,7 +108,7 @@
   });
 
   function renderProfile(data) {
-    // Заповнюємо основну інформацію
+    // Основна інформація
     let html = `
       <p><strong>Email:</strong> ${data.email}</p>
       <p><strong>Нікнейм:</strong> ${data.nickname}</p>
@@ -112,17 +123,30 @@
     profileInfoDiv.innerHTML = html;
 
     // Викладачі
-    if (data.teachers && data.teachers.length > 0) {
-      teachersListDiv.innerHTML = `<ul>${data.teachers.map(t => `<li>${t.nickname} (ID: ${t.id})</li>`).join('')}</ul>`;
-    } else {
-      teachersListDiv.innerHTML = '<p>Немає даних.</p>';
+    if (teachersListDiv) {
+      if (data.teachers && data.teachers.length > 0) {
+        teachersListDiv.innerHTML = `<ul>${data.teachers.map(t => `<li>${t.nickname} (ID: ${t.id})</li>`).join('')}</ul>`;
+      } else {
+        teachersListDiv.innerHTML = '<p>Немає даних.</p>';
+      }
     }
 
     // Друзі
-    if (data.friends && data.friends.length > 0) {
-      friendsListDiv.innerHTML = `<ul>${data.friends.map(f => `<li>${f.nickname} (ID: ${f.id})</li>`).join('')}</ul>`;
-    } else {
-      friendsListDiv.innerHTML = '<p>Немає даних.</p>';
+    if (friendsListDiv) {
+      if (data.friends && data.friends.length > 0) {
+        friendsListDiv.innerHTML = `<ul>${data.friends.map(f => `<li>${f.nickname} (ID: ${f.id})</li>`).join('')}</ul>`;
+      } else {
+        friendsListDiv.innerHTML = '<p>Немає даних.</p>';
+      }
+    }
+
+    // Обрані предмети
+    if (subjectsListDiv) {
+      if (data.subjects && data.subjects.length > 0) {
+        subjectsListDiv.innerHTML = `<ul>${data.subjects.map(s => `<li>${s}</li>`).join('')}</ul>`;
+      } else {
+        subjectsListDiv.innerHTML = '<p>Немає обраних предметів.</p>';
+      }
     }
   }
 </script>

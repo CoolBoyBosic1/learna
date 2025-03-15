@@ -2,39 +2,28 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 
-
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
-
-
-# ====== Предмети ======
 class Subject(models.Model):
     CATEGORY_CHOICES = [
         ('Programming', 'Програмування'),
         ('Math', 'Математика'),
         ('Languages', 'Мови')
     ]
-
     sb_name = models.CharField(max_length=100, unique=True, verbose_name="Назва предмета")
     sb_category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, verbose_name="Категорія")
 
     def __str__(self):
         return self.sb_name
 
-
-# ====== Підтематики ======
 class Subsubject(models.Model):
-    objects = None
     ss_name = models.CharField(max_length=100, unique=True, verbose_name="Назва підпредмета")
     sb_id = models.ForeignKey(Subject, on_delete=models.CASCADE, verbose_name="Предмет")
 
     def __str__(self):
-        return self.ss_name
+        return f"{self.ss_name} ({self.sb_id.sb_name})"
 
-
-
-# Менеджер користувачів
 class UserManager(BaseUserManager):
     def create_user(self, email, nickname, password=None, **extra_fields):
         if not email:
@@ -50,22 +39,25 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault("is_superuser", True)
         return self.create_user(email, nickname, password, **extra_fields)
 
-
 class User(AbstractBaseUser, PermissionsMixin):
     ROLE_CHOICES = [
         ("learner", "Учень"),
         ("teacher", "Вчитель"),
         ("admin", "Адміністратор"),
     ]
-
     email = models.EmailField(unique=True)
     nickname = models.CharField(max_length=50, unique=True)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default="learner")
     city = models.CharField(max_length=50, null=True, blank=True)
     info = models.TextField(null=True, blank=True)
-    social_networks = models.TextField(null=True, blank=True)
-    available_times = models.JSONField(default=list, blank=True)  # Доступні слоти
-    subsubjects = models.ManyToManyField(Subsubject, related_name="users", blank=True)  # Додаємо зв’язок
+    # Припустимо, викладачі можуть відзначати group_teaching = True
+    group_teaching = models.BooleanField(default=False)
+
+    # Зберігаємо вибрані підпредмети (ManyToMany)
+    subsubjects = models.ManyToManyField(Subsubject, related_name="users", blank=True)
+
+    # Доступні слоти (JSONField)
+    available_times = models.JSONField(default=list, blank=True)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)

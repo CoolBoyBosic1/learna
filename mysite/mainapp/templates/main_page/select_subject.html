@@ -7,47 +7,28 @@
 <div class="select-container">
     <h2>Обери підпредмет</h2>
     <div class="subject-container">
-        <!-- Приклад з Математикою -->
-        <div class="subject-card">
-            <div class="subject-title">Математика</div>
-            <div class="subtopics">
-                <div class="subtopic" onclick="toggleSelection(this)">Алгебра</div>
-                <div class="subtopic" onclick="toggleSelection(this)">Геометрія</div>
-                <div class="subtopic" onclick="toggleSelection(this)">Тригонометрія</div>
-                <div class="subtopic" onclick="toggleSelection(this)">Комбінаторика</div>
+        {% for subject in subjects %}
+            <div class="subject-card">
+                <div class="subject-title">{{ subject.sb_name }}</div>
+                <div class="subtopics">
+                    {% for sub in subject.subsubject_set.all %}
+                        <div class="subtopic" data-id="{{ sub.id }}" onclick="toggleSelection(this)">
+                            {{ sub.ss_name }}
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
-        </div>
-        <!-- Програмування -->
-        <div class="subject-card">
-            <div class="subject-title">Програмування</div>
-            <div class="subtopics">
-                <div class="subtopic" onclick="toggleSelection(this)">Python</div>
-                <div class="subtopic" onclick="toggleSelection(this)">JavaScript</div>
-                <div class="subtopic" onclick="toggleSelection(this)">C++</div>
-                <div class="subtopic" onclick="toggleSelection(this)">Java</div>
-            </div>
-        </div>
-
-        <!-- Мови -->
-        <div class="subject-card">
-            <div class="subject-title">Мови</div>
-            <div class="subtopics">
-                <div class="subtopic" onclick="toggleSelection(this)">Англійська</div>
-                <div class="subtopic" onclick="toggleSelection(this)">Українська</div>
-                <div class="subtopic" onclick="toggleSelection(this)">Німецька</div>
-                <div class="subtopic" onclick="toggleSelection(this)">Французька</div>
-            </div>
-        </div>
+        {% endfor %}
     </div>
 
     <!-- Кнопка "Продовжити" -->
     <button id="continue-btn" class="continue-btn" onclick="goToCalendar()">Продовжити</button>
 </div>
 
-<!-- Прихована форма, яка відправить POST із вибраними підпредметами -->
+<!-- Прихована форма для відправлення обраних ID -->
 <form id="subjectForm" method="POST" style="display: none;">
     {% csrf_token %}
-    <input type="hidden" name="selected_subsubjects" id="selected_subsubjects">
+    <input type="hidden" name="selected_subsubjects_ids" id="selected_subsubjects_ids">
 </form>
 
 <script>
@@ -56,23 +37,23 @@ function toggleSelection(element) {
 }
 
 function goToCalendar() {
-    // Знаходимо всі .subtopic, які мають клас .selected
+    // Знаходимо всі елементи з класом .subtopic, що мають клас .selected
     let selected = document.querySelectorAll('.subtopic.selected');
     if (selected.length === 0) {
         alert("Будь ласка, оберіть хоча б один підпредмет!");
         return;
     }
 
-    // Формуємо масив назв обраних підпредметів
-    let subsubjectArray = [];
+    // Формуємо масив ID (взяти значення з data-id)
+    let selectedIds = [];
     selected.forEach(elem => {
-        subsubjectArray.push(elem.textContent.trim());
+        selectedIds.push(elem.getAttribute('data-id'));
     });
 
-    // Записуємо JSON у прихований інпут
-    document.getElementById("selected_subsubjects").value = JSON.stringify(subsubjectArray);
+    // Записуємо JSON-рядок у прихований інпут
+    document.getElementById("selected_subsubjects_ids").value = JSON.stringify(selectedIds);
 
-    // Відправляємо форму (POST) на цей самий URL, де Django в’юшка зчитає дані і збереже в сесії
+    // Відправляємо форму методом POST
     document.getElementById("subjectForm").submit();
 }
 </script>

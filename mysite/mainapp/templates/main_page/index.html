@@ -4,27 +4,37 @@
 {% block title %}Learna - Головна{% endblock %}
 
 {% block content %}
-<!-- Секція з привітанням та кнопками -->
 <section class="hero" style="margin-bottom: 40px;">
     <h1 class="fade-in">Ласкаво просимо!</h1>
     <p class="subtitle fade-in">Обери, що тобі потрібно:</p>
     <form method="POST" action="">
         {% csrf_token %}
         <div class="buttons">
-            <button type="submit" name="choice" value="find_friends" class="btn">
-                👥 Знайти однодумців
-            </button>
-            <button type="submit" name="choice" value="find_tutor_indiv" class="btn">
-                📚 Знайти репетитора
-            </button>
-            <button type="submit" name="choice" value="become_tutor" class="btn">
-                🧑‍🏫 Стати репетитором
-            </button>
+            {% if user.is_authenticated %}
+                {% if user.role == "learner" %}
+                    <button type="submit" name="choice" value="find_friends" class="btn">
+                        👥 Знайти однодумців
+                    </button>
+                    <button type="submit" name="choice" value="find_tutor_indiv" class="btn">
+                        📚 Знайти репетитора
+                    </button>
+                {% endif %}
+                {% if user.role == "teacher" %}
+                    <button type="submit" name="choice" value="become_tutor" class="btn">
+                        🧑‍🏫 Ви вже викладач
+                    </button>
+                {% else %}
+                    <button type="submit" name="choice" value="become_tutor" class="btn">
+                        🧑‍🏫 Стати репетитором
+                    </button>
+                {% endif %}
+            {% else %}
+                <p>Для пошуку однодумців чи репетитора, будь ласка, <a href="{% url 'login' %}">увійдіть</a>.</p>
+            {% endif %}
         </div>
     </form>
 </section>
 
-<!-- Секція з матеріалами, відділена від попередньої на 40px -->
 <section class="materials" style="margin-bottom: 40px;">
     <h2 style="margin-bottom: 10px;">Навчіться вчитись за допомогою цих відео:</h2>
     {% if materials %}
@@ -32,7 +42,6 @@
             {% for row in materials %}
             <li style="margin-bottom: 20px;">
                 <strong>{{ row.0 }}</strong><br>
-                <!-- Клікабельне посилання, що веде на material_click -->
                 <a href="{% url 'material_click' forloop.counter0 %}" target="_blank">
                     {{ row.1 }}
                 </a>
@@ -42,5 +51,10 @@
     {% else %}
         <p>Наразі немає доданих матеріалів.</p>
     {% endif %}
+</section>
+
+<section class="piechart-section" style="margin-bottom: 40px;">
+    <h2>Статистика обраних предметів</h2>
+    <img src="{% url 'subject_pie_chart' %}" alt="Subject Pie Chart" style="max-width: 100%;">
 </section>
 {% endblock %}

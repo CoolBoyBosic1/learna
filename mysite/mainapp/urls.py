@@ -5,7 +5,7 @@ from . import views
 from .views import (
     select_subject, select_time, profile, tutor_indiv_final,
     find_friends_final, tutor_group_final, user_login, profile_api, final_step, user_logout,
-    material_click
+    material_click, subject_pie_chart
 )
 
 urlpatterns = [
@@ -22,5 +22,6 @@ urlpatterns = [
     path('logout/', user_logout, name='logout'),
 
     path('final_step/', final_step, name='final_step'),
-    path('api/profile/', profile_api, name='profile_api')
+    path('api/profile/', profile_api, name='profile_api'),
+    path('subject_pie_chart/', subject_pie_chart, name='subject_pie_chart'),
 ]
